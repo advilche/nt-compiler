@@ -6,9 +6,11 @@ SRCS = lex.c lexhelper.c lexhelper.h
 
 # Name of your final executable output
 TARGET = lexer
+# TARGET = main 
 
 # List all the object files that need to be linked together
 OBJS = lex.o lexhelper.o
+# OBJS = main.o
 
 # The default target that runs when you just type 'make'
 all: $(TARGET)

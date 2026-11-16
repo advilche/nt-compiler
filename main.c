@@ -1,1 +1,3 @@
-(; 1234 returnValue () return () return 21;
+int main(void) {
+    return 21;
+}

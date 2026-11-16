@@ -17,9 +17,21 @@ typedef struct TokenArrayObj {
   size_t capacity;
 } TokenArrayObj;
 
+/* comma, apostrohpe literal, double quotes  */
 bool is_semi_colon(uint32_t val) { return (val == ';'); }
+
+bool is_apostrophe(uint32_t val) { return (val) == '\''; }
+
+/* parenthesis, braces, brackets */
 bool is_left_paren(uint32_t val) { return (val == '('); }
 bool is_right_paren(uint32_t val) { return (val == ')'); }
+
+bool is_left_brace(uint32_t val) { return (val) == '{';}
+bool is_right_brace(uint32_t val) { return (val) == '}';}
+
+bool is_right_bracket(uint32_t val) {return (val) == ']';}
+bool is_left_bracket(uint32_t val) {return (val) == '[';}
+
 bool is_digit_u32(uint32_t val) { return (val >= '0' && val <= '9'); }
 
 const char *tokenTypeToString(TokenType type) {
@@ -43,7 +55,8 @@ const char *tokenTypeToString(TokenType type) {
 
 void appendToken(TokenArray tA, Token t) {
   if (tA == NULL) {
-    printf("Token Array Error: calling append() on NULL Token Array reference\n");
+    printf(
+        "Token Array Error: calling append() on NULL Token Array reference\n");
     exit(EXIT_FAILURE);
   }
 
