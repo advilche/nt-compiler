@@ -21,15 +21,17 @@
 #define EXIT_FAILURE 1
 
 typedef enum {
-  TOKEN_KEYWORD,
-  TOKEN_CONSTANT,
+  TOKEN_RETURN,
+  TOKEN_INT,
+  TOKEN_VOID,
+  TOKEN_IDENTIFIER,
   TOKEN_SPECIAL,
+  TOKEN_INTEGER,
+  TOKEN_EOF,
   TOKEN_OP,
 } TokenType;
 
 typedef enum {
-  TOKEN_INT,
-  TOKEN_VOID,
   TOKEN_LEFT_PAREN,
   TOKEN_RIGHT_PAREN,
   TOKEN_LEFT_CURLY,
@@ -38,7 +40,6 @@ typedef enum {
   TOKEN_RIGHT_BRACKET,
   TOKEN_SEMI_COLON,
   TOKEN_COMMA,
-  TOKEN_EOF,
 } Special_Symbol_Type;
 
 // extern uint32_t keywords_list[];
@@ -48,6 +49,8 @@ typedef struct TokenObj *Token;
 typedef struct TokenArrayObj *TokenArray;
 
 bool is_semi_colon(uint32_t val);
+
+bool is_eof(uint32_t val);
 
 bool is_left_paren(uint32_t val);
 bool is_right_paren(uint32_t val);
@@ -63,11 +66,11 @@ bool is_digit_u32(uint32_t val);
 void appendToken(TokenArray tArray, Token t);
 // if the array is null then it should exit failure
 // if not then it should create the newtoken
-TokenArray newTokenArray(size_t capacity);
+TokenArray newTokenArray();
 
 // void tokenArrayDestroy(TokenArrayObj arr);
 // void tokenArrayAppend(TokenArrayObj arr, TokenObj token);
-void printTokenArray(TokenArray arr);
+void printTokenArray(FILE* out, TokenArray tA);
 
 const char *tokenTypeToString(TokenType type);
 void printToken(Token token);
