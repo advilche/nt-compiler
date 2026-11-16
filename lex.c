@@ -3,7 +3,7 @@
 TokenArray tokenize(char *file_content) {
   size_t length = strlen(file_content);
 
-  TokenArray tArray = newTokenArray(50);
+  TokenArray tArray = newTokenArray();
   size_t token_count = 0;
 
   uint32_t cursor;
@@ -15,7 +15,7 @@ TokenArray tokenize(char *file_content) {
       size_t start = i;
 
       while (i < length && iswalpha((unsigned char)file_content[i])) {
-        printf("is walpha\n");
+        // printf("is walpha\n");
         i++;
       }
 
@@ -27,23 +27,34 @@ TokenArray tokenize(char *file_content) {
           strncmp(&file_content[start], "return", word_length) == 0) {
 
         Token token =
-            newToken(TOKEN_KEYWORD, &file_content[start], word_length);
+            newToken(TOKEN_RETURN, &file_content[start], word_length);
 
         appendToken(tArray, token);
 
-        printToken(token);
-        // tokens[token_count++] = *token;
+
       } else if (word_length == strlen("int") &&
         strncmp(&file_content[start], "int", word_length) == 0) {
 
         Token token = 
-          newToken(TOKEN_KEYWORD, &file_content[start], word_length);
+          newToken(TOKEN_INT, &file_content[start], word_length);
 
           appendToken(tArray, token);
 
-          printToken(token);
-      } else {
+      } else if (word_length == strlen("void") && 
+      strncmp(&file_content[start], "void", word_length) == 0) {
+
+        Token token = 
+          newToken(TOKEN_VOID, &file_content[start], word_length);
+
+          appendToken(tArray, token);
+
+      } else {        
         printf("prob an identifier\n");
+        Token token = 
+          newToken(TOKEN_IDENTIFIER, &file_content[start], word_length);
+          
+          appendToken(tArray, token);
+
     };
 
       //  keyword checking end
@@ -52,7 +63,7 @@ TokenArray tokenize(char *file_content) {
     }
 
     if (isspace((unsigned char)file_content[cursor])) {
-      printf("is space \n");
+      // printf("is space \n");
       i++;
       continue;
     }
@@ -62,83 +73,81 @@ TokenArray tokenize(char *file_content) {
       numeric = &file_content[cursor];
 
       while (is_digit_u32(file_content[i])) {
-        printf("is digi \n");
+        // printf("is digi \n");
         i++;
       }
 
-      Token token = newToken(TOKEN_CONSTANT, numeric, i - cursor);
-      printToken(token);
+      Token token = newToken(TOKEN_INTEGER, numeric, i - cursor);
+      appendToken(tArray, token);
 
-      // tokens[token_count++] = newToken;
     }
 
     if (is_semi_colon(file_content[cursor])) {
-      printf("is semi \n");
+      // printf("is semi \n");
       Token token = newToken(TOKEN_SPECIAL, &file_content[cursor], (size_t)1);
-
-      printToken(token);
-      // tokens[token_count++] = newToken;
+      appendToken(tArray, token);
 
       i++;
     }
 
     if (is_left_paren(file_content[cursor])) {
-      printf("is left paren \n");
+      // printf("is left paren \n");
       Token token = newToken(TOKEN_SPECIAL, &file_content[cursor], (size_t)1);
-      printToken(token);
-
-      //   tokens[token_count++] = newToken;
+      appendToken(tArray, token);
 
       i++;
     }
 
     if (is_right_paren(file_content[cursor])) {
-      printf("is right paren \n");
+      // printf("is right paren \n");
       Token token = newToken(TOKEN_SPECIAL, &file_content[cursor], (size_t)1);
-      printToken(token);
+      appendToken(tArray, token);
 
-      //   tokens[token_count++] = newToken;
       i++;
     }
 
     if (is_left_brace(file_content[cursor])) {
-      printf("is right paren \n");
+      // printf("is right paren \n");
       Token token = newToken(TOKEN_SPECIAL, &file_content[cursor], (size_t)1);
-      printToken(token);
+      appendToken(tArray, token);
 
-      //   tokens[token_count++] = newToken;
       i++;
     }
 
     if (is_right_brace(file_content[cursor])) {
-      printf("is right paren \n");
+      // printf("is right paren \n");
       Token token = newToken(TOKEN_SPECIAL, &file_content[cursor], (size_t)1);
-      printToken(token);
+      appendToken(tArray, token);
 
-      //   tokens[token_count++] = newToken;
       i++;
     }
     
     if (is_left_bracket(file_content[cursor])) {
-      printf("is right paren \n");
+      // printf("is right paren \n");
       Token token = newToken(TOKEN_SPECIAL, &file_content[cursor], (size_t)1);
-      printToken(token);
-      
-      //   tokens[token_count++] = newToken;
+      appendToken(tArray, token);
+
       i++;
     }
 
     if (is_right_bracket(file_content[cursor])) {
-      printf("is right paren \n");
+      // printf("is right paren \n");
       Token token = newToken(TOKEN_SPECIAL, &file_content[cursor], (size_t)1);
-      printToken(token);
+      appendToken(tArray, token);
 
-      //   tokens[token_count++] = newToken;
       i++;
     }
+
+    // if (is_eof(file_content[cursor] == EOF)) {
+
+    //   Token token = newToken(TOKEN_EOF, &file_content[cursor], (size_t)1);
+    //   appendToken(tArray, token);
+
+    //   i++;
+    // }
   }
 
-  return 0;
+  return tArray;
 }
 
 int main(int argc, const char *argv[]) {
@@ -147,7 +156,13 @@ int main(int argc, const char *argv[]) {
   }
 
   char *file_content = read_file_to_string(argv[1]);
-  tokenize(file_content);
+
+  if (file_content == NULL) {
+    err(EXIT_FAILURE, "File Error: file_content not read");
+  }
+
+  TokenArray tArray = tokenize(file_content);
+  printTokenArray(stdout, tArray);
 
   //   printTokens(tokens, 3);
   if (file_content != NULL) {
@@ -156,7 +171,7 @@ int main(int argc, const char *argv[]) {
     free(file_content);
   }
 
-  // free(tokens);
+;  // free(tokens);
   // free(file_content);
 
   return 0;

@@ -14,13 +14,15 @@ typedef struct TokenArrayObj {
   Token back;
 
   size_t length;
-  size_t capacity;
 } TokenArrayObj;
 
 /* comma, apostrohpe literal, double quotes  */
 bool is_semi_colon(uint32_t val) { return (val == ';'); }
 
 bool is_apostrophe(uint32_t val) { return (val) == '\''; }
+
+/* special token types */
+bool is_eof(uint32_t val) { return (val) == '\0'; }
 
 /* parenthesis, braces, brackets */
 bool is_left_paren(uint32_t val) { return (val == '('); }
@@ -36,17 +38,29 @@ bool is_digit_u32(uint32_t val) { return (val >= '0' && val <= '9'); }
 
 const char *tokenTypeToString(TokenType type) {
   switch (type) {
-  case TOKEN_KEYWORD:
-    return "keyword";
+  case TOKEN_RETURN:
+    return "return";
 
-  case TOKEN_CONSTANT:
-    return "constant";
+  case TOKEN_INT:
+    return "int";
+
+  case TOKEN_VOID:
+  return "void";
+
+  case TOKEN_IDENTIFIER:
+    return "identifier";
+  
+  case TOKEN_INTEGER:
+    return "integer";
 
   case TOKEN_OP:
     return "operator";
 
   case TOKEN_SPECIAL:
     return "special";
+
+  case TOKEN_EOF:
+    return "eof";
 
   default:
     return "UNKNOWN";
@@ -87,11 +101,14 @@ void printToken(Token token) {
   printf("\n");
 }
 
-// void printTokenArray(TokenArray arr) {
-//   for (size_t i = 0; i <= arr->length; i++){
-
-//   }
-// }
+void printTokenArray(FILE* out, TokenArray tA) {
+  Token current = tA->front;
+  while (current != NULL) {
+    printToken(current);
+    current = current->next;
+  }
+    fprintf(out, "\n");
+}
 
 // void printTokens(Token *tokens, uint32_t token_count) {
 //   for (size_t i = 0; i < token_count; i++) {
@@ -173,9 +190,7 @@ Token newToken(TokenType type, const char *start, size_t length) {
   return t;
 }
 
-TokenArray newTokenArray(size_t capacity) {
-  if (capacity == 0)
-    return NULL;
+TokenArray newTokenArray() {
   TokenArray tArray;
 
   tArray = malloc(sizeof(TokenArrayObj));
@@ -187,7 +202,6 @@ TokenArray newTokenArray(size_t capacity) {
   tArray->back = NULL;
 
   tArray->length = 0;
-  tArray->capacity = capacity;
 
   return tArray;
 }
