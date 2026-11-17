@@ -28,11 +28,11 @@ bool is_eof(uint32_t val) { return (val) == '\0'; }
 bool is_left_paren(uint32_t val) { return (val == '('); }
 bool is_right_paren(uint32_t val) { return (val == ')'); }
 
-bool is_left_brace(uint32_t val) { return (val) == '{';}
-bool is_right_brace(uint32_t val) { return (val) == '}';}
+bool is_left_brace(uint32_t val) { return (val) == '{'; }
+bool is_right_brace(uint32_t val) { return (val) == '}'; }
 
-bool is_right_bracket(uint32_t val) {return (val) == ']';}
-bool is_left_bracket(uint32_t val) {return (val) == '[';}
+bool is_right_bracket(uint32_t val) { return (val) == ']'; }
+bool is_left_bracket(uint32_t val) { return (val) == '['; }
 
 bool is_digit_u32(uint32_t val) { return (val >= '0' && val <= '9'); }
 
@@ -45,19 +45,40 @@ const char *tokenTypeToString(TokenType type) {
     return "int";
 
   case TOKEN_VOID:
-  return "void";
+    return "void";
 
   case TOKEN_IDENTIFIER:
     return "identifier";
-  
+
+  case TOKEN_SEMI_COLON:
+    return "semi colon";
+
+  case TOKEN_LEFT_PAREN:
+    return "left paren";
+
+  case TOKEN_RIGHT_PAREN:
+    return "right paren";
+
+  case TOKEN_LEFT_CURLY:
+    return "left curly";
+
+  case TOKEN_RIGHT_CURLY:
+    return "right curly";
+
+  case TOKEN_LEFT_BRACKET:
+    return "left bracket";
+
+  case TOKEN_RIGHT_BRACKET:
+    return "right bracket";
+
+  case TOKEN_SPECIAL:
+    return "special";
+
   case TOKEN_INTEGER:
     return "integer";
 
   case TOKEN_OP:
     return "operator";
-
-  case TOKEN_SPECIAL:
-    return "special";
 
   case TOKEN_EOF:
     return "eof";
@@ -101,13 +122,13 @@ void printToken(Token token) {
   printf("\n");
 }
 
-void printTokenArray(FILE* out, TokenArray tA) {
+void printTokenArray(FILE *out, TokenArray tA) {
   Token current = tA->front;
   while (current != NULL) {
     printToken(current);
     current = current->next;
   }
-    fprintf(out, "\n");
+  fprintf(out, "\n");
 }
 
 // void printTokens(Token *tokens, uint32_t token_count) {

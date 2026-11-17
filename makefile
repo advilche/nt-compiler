@@ -2,14 +2,14 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -g
 
-SRCS = lex.c lexhelper.c lexhelper.h
+SRCS = parser.c lex.c parserhelper.c parserhelper.h lexhelper.c lexhelper.h
 
 # Name of your final executable output
-TARGET = lexer
+TARGET = parser
 # TARGET = main 
 
 # List all the object files that need to be linked together
-OBJS = lex.o lexhelper.o
+OBJS = parser.o lex.o parserhelper.o lexhelper.o 
 # OBJS = main.o
 
 # The default target that runs when you just type 'make'
