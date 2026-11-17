@@ -16,24 +16,119 @@ typedef struct TokenArrayObj {
   size_t length;
 } TokenArrayObj;
 
-/* comma, apostrohpe literal, double quotes  */
+/*** Constructors-Destructors ***/
+
+Token newToken(TokenType type, const char *start, size_t length) {
+  Token t = malloc(sizeof(TokenObj));
+
+  t->type = type;
+  t->start = start;
+  t->length = length;
+
+  t->prev = NULL;
+  t->next = NULL;
+
+  return t;
+}
+
+void tokenDestroy(Token *pT) {
+  if ((pT != NULL) && (*pT != NULL)) {
+    free(*pT);
+    *pT = NULL;
+  }
+}
+
+TokenArray newTokenArray() {
+  TokenArray tArray;
+
+  tArray = malloc(sizeof(TokenArrayObj));
+
+  if (tArray == NULL)
+    return NULL;
+
+  tArray->front = NULL;
+  tArray->back = NULL;
+
+  tArray->length = 0;
+
+  return tArray;
+}
+
+/*** Access Functions ***/
+
+Token firstToken(TokenArray tokens) {
+  if (tokens == NULL)
+    return NULL;
+
+  return tokens->front;
+}
+
+Token nextToken(Token token) {
+  if (token == NULL)
+    return NULL;
+  return token->next;
+}
+
+TokenType tokenKind(Token token) {
+  if (token == NULL)
+    exit(EXIT_FAILURE);
+  return token->type;
+}
+
+/*** Manipulation procedures ***/
+
+void appendToken(TokenArray tA, Token t) {
+  if (tA == NULL) {
+    printf(
+        "Token Array Error: calling append() on NULL Token Array reference\n");
+    exit(EXIT_FAILURE);
+  }
+
+  if (t == NULL) {
+    printf("Token Error: calling append() on NULL Token reference\n");
+    exit(EXIT_FAILURE);
+  }
+
+  if (tA->length == 0) {
+    tA->front = t;
+    tA->back = t;
+  } else {
+    t->prev = tA->back;
+    tA->back->next = t;
+    tA->back = t;
+  }
+  tA->length += 1;
+}
+
+void deleteFront(TokenArray tA);
+
+/*** Other Functions ***/
+void printToken(Token token) {
+  printf("\n");
+  printf("Type: %s\n", tokenTypeToString(token->type));
+  printf("Text: %.*s\n", (int)token->length, token->start);
+  printf("Length: %zu\n", token->length);
+  printf("\n");
+}
+
+void printTokenArray(FILE *out, TokenArray tA) {
+  Token current = tA->front;
+  while (current != NULL) {
+    printToken(current);
+    current = current->next;
+  }
+  fprintf(out, "\n");
+}
+
 bool is_semi_colon(uint32_t val) { return (val == ';'); }
-
 bool is_apostrophe(uint32_t val) { return (val) == '\''; }
-
-/* special token types */
 bool is_eof(uint32_t val) { return (val) == '\0'; }
-
-/* parenthesis, braces, brackets */
 bool is_left_paren(uint32_t val) { return (val == '('); }
 bool is_right_paren(uint32_t val) { return (val == ')'); }
-
 bool is_left_brace(uint32_t val) { return (val) == '{'; }
 bool is_right_brace(uint32_t val) { return (val) == '}'; }
-
 bool is_right_bracket(uint32_t val) { return (val) == ']'; }
 bool is_left_bracket(uint32_t val) { return (val) == '['; }
-
 bool is_digit_u32(uint32_t val) { return (val >= '0' && val <= '9'); }
 
 const char *tokenTypeToString(TokenType type) {
@@ -88,56 +183,6 @@ const char *tokenTypeToString(TokenType type) {
   }
 }
 
-void appendToken(TokenArray tA, Token t) {
-  if (tA == NULL) {
-    printf(
-        "Token Array Error: calling append() on NULL Token Array reference\n");
-    exit(EXIT_FAILURE);
-  }
-
-  if (t == NULL) {
-    printf("Token Error: calling append() on NULL Token reference\n");
-    exit(EXIT_FAILURE);
-  }
-
-  if (tA->length == 0) {
-    tA->front = t;
-    tA->back = t;
-  } else {
-    t->prev = tA->back;
-    tA->back->next = t;
-    tA->back = t;
-  }
-  tA->length += 1;
-}
-
-// uint32_t keywords_list[] = {'return', 'if', 'while', 'for'};
-// uint32_t special_symbols[] = {'(', ')', '{', '}', '[', ']', ';', ','};
-
-void printToken(Token token) {
-  printf("\n");
-  printf("Type: %s\n", tokenTypeToString(token->type));
-  printf("Text: %.*s\n", (int)token->length, token->start);
-  printf("Length: %zu\n", token->length);
-  printf("\n");
-}
-
-void printTokenArray(FILE *out, TokenArray tA) {
-  Token current = tA->front;
-  while (current != NULL) {
-    printToken(current);
-    current = current->next;
-  }
-  fprintf(out, "\n");
-}
-
-// void printTokens(Token *tokens, uint32_t token_count) {
-//   for (size_t i = 0; i < token_count; i++) {
-//     printf("%zu: ", i);
-//     printToken(tokens[i]);
-//   }
-// }
-
 char *read_file_to_string(const char *filepath) {
   int fd = open(filepath, O_RDONLY);
   if (fd == -1) {
@@ -185,44 +230,4 @@ char *read_file_to_string(const char *filepath) {
   close(fd);
 
   return buffer;
-}
-
-// void tokenArrayDestroy(TokenArr arr){
-//     if (arr != NULL){
-//         tokensDestroy(arr->tokens);
-//         free(arr);
-//     }
-// }
-
-// void tokensDestroy(Token* tokens){
-//     free(tokens);
-// }
-
-Token newToken(TokenType type, const char *start, size_t length) {
-  Token t = malloc(sizeof(TokenObj));
-
-  t->type = type;
-  t->start = start;
-  t->length = length;
-
-  t->prev = NULL;
-  t->next = NULL;
-
-  return t;
-}
-
-TokenArray newTokenArray() {
-  TokenArray tArray;
-
-  tArray = malloc(sizeof(TokenArrayObj));
-
-  if (tArray == NULL)
-    return NULL;
-
-  tArray->front = NULL;
-  tArray->back = NULL;
-
-  tArray->length = 0;
-
-  return tArray;
 }

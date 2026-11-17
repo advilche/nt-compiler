@@ -15,9 +15,13 @@ int main(int argc, const char *argv[]) {
     err(EXIT_FAILURE, "File Error: file_content not read");
   }
 
-  TokenArray tArray = tokenize(file_content);
-  printTokenArray(stdout, tArray);
+  TokenArray tokens = tokenize(file_content);
+  // printTokenArray(stdout, tokens);
 
+  Parser p = newParser(tokens);
+
+  advance(p);
+  // peek(p);
   //   printTokens(tokens, 3);
   if (file_content != NULL) {
     printf("File Content:\n%s\n", file_content);

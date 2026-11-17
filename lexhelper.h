@@ -41,44 +41,40 @@ typedef enum {
   TOKEN_COMMA,
 } Special_Symbol_Type;
 
-// extern uint32_t keywords_list[];
-// extern uint32_t special_symbols[];
-
 typedef struct TokenObj *Token;
 typedef struct TokenArrayObj *TokenArray;
 
+/*** Constructors-Destructors ***/
+Token newToken(TokenType type, const char *start, size_t length);
+void tokenDestroy(Token *pT);
+TokenArray newTokenArray();
+// void tokenArrayDestroy(okenArrayObj arr);
+
+/*** Access Functions ***/
+Token firstToken(TokenArray tokens);
+Token nextToken(Token token);
+TokenType tokenKind(Token token);
+TokenArray tokenize(char *file_content);
+
+/*** Manipulation procedures ***/
+void appendToken(TokenArray tArray, Token t);
+void deleteFront(TokenArray tA);
+
+/*** Other Functions ***/
+void printTokenArray(FILE *out, TokenArray tA);
+void printToken(Token token);
+
 bool is_semi_colon(uint32_t val);
-
 bool is_eof(uint32_t val);
-
 bool is_left_paren(uint32_t val);
 bool is_right_paren(uint32_t val);
-
 bool is_left_brace(uint32_t val);
 bool is_right_brace(uint32_t val);
-
 bool is_left_bracket(uint32_t val);
 bool is_right_bracket(uint32_t val);
-
 bool is_digit_u32(uint32_t val);
-
-void appendToken(TokenArray tArray, Token t);
-// if the array is null then it should exit failure
-// if not then it should create the newtoken
-TokenArray newTokenArray();
-
-void printTokenArray(FILE *out, TokenArray tA);
-
 const char *tokenTypeToString(TokenType type);
-void printToken(Token token);
-// void printTokens(Token tokens, uint32_t token_count);
-
 char *read_file_to_string(const char *filepath);
-
-Token newToken(TokenType type, const char *start, size_t length);
-TokenArray tokenize(char *file_content);
-// void tokenArrayDestroy(TokenArrayObj arr);
-// void tokensDestroy(TokenArray tokens);
 
 #endif
 
