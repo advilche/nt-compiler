@@ -5,6 +5,7 @@
 
 #include <err.h>
 #include <fcntl.h>
+#include <regex.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -14,8 +15,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <wctype.h>
-#include <regex.h>
-
 
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
@@ -25,20 +24,20 @@ typedef enum {
   TOKEN_INT,
   TOKEN_VOID,
   TOKEN_IDENTIFIER,
-  TOKEN_SPECIAL,
-  TOKEN_INTEGER,
-  TOKEN_EOF,
-  TOKEN_OP,
-} TokenType;
-
-typedef enum {
+  TOKEN_SEMI_COLON,
   TOKEN_LEFT_PAREN,
   TOKEN_RIGHT_PAREN,
   TOKEN_LEFT_CURLY,
   TOKEN_RIGHT_CURLY,
   TOKEN_LEFT_BRACKET,
   TOKEN_RIGHT_BRACKET,
-  TOKEN_SEMI_COLON,
+  TOKEN_SPECIAL,
+  TOKEN_INTEGER,
+  TOKEN_OP,
+  TOKEN_EOF,
+} TokenType;
+
+typedef enum {
   TOKEN_COMMA,
 } Special_Symbol_Type;
 
@@ -68,9 +67,7 @@ void appendToken(TokenArray tArray, Token t);
 // if not then it should create the newtoken
 TokenArray newTokenArray();
 
-// void tokenArrayDestroy(TokenArrayObj arr);
-// void tokenArrayAppend(TokenArrayObj arr, TokenObj token);
-void printTokenArray(FILE* out, TokenArray tA);
+void printTokenArray(FILE *out, TokenArray tA);
 
 const char *tokenTypeToString(TokenType type);
 void printToken(Token token);
@@ -79,6 +76,8 @@ void printToken(Token token);
 char *read_file_to_string(const char *filepath);
 
 Token newToken(TokenType type, const char *start, size_t length);
+TokenArray tokenize(char *file_content);
+// void tokenArrayDestroy(TokenArrayObj arr);
 // void tokensDestroy(TokenArray tokens);
 
 #endif
