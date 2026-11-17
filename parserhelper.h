@@ -12,3 +12,12 @@ typedef struct ParserObj *Parser;
 /*** Manipulation procedures ***/
 
 /*** Other Functions ***/
+
+
+/**
+
+program     = "int" identifier "(" "void" ")" "{" statement "}" EOF
+statement   = "return" expression ";"
+expression  = integer
+
+**/
