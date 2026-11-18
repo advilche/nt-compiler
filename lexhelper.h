@@ -46,12 +46,15 @@ typedef struct TokenArrayObj *TokenArray;
 
 /*** Constructors-Destructors ***/
 Token newToken(TokenType type, const char *start, size_t length);
-void tokenDestroy(Token *pT);
+void freeToken(Token *pT);
 TokenArray newTokenArray();
-// void tokenArrayDestroy(okenArrayObj arr);
+void freeTokenArray(TokenArray *tA);
 
 /*** Access Functions ***/
-Token firstToken(TokenArray tokens);
+TokenArray copyTokenArray(TokenArray tA);
+size_t length(TokenArray tA);
+Token getFront(TokenArray tokens);
+Token getBack(TokenArray tokens);
 Token nextToken(Token token);
 TokenType tokenKind(Token token);
 TokenArray tokenize(char *file_content);

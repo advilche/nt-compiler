@@ -16,12 +16,22 @@ int main(int argc, const char *argv[]) {
   }
 
   TokenArray tokens = tokenize(file_content);
-  // printTokenArray(stdout, tokens);
+  printTokenArray(stdout, tokens);
+  TokenArray tokens2 = copyTokenArray(tokens);
+  // printTokenArray(stdout, tokens2);
 
   Parser p = newParser(tokens);
 
+  printf("index at init is: %zu \n", getIndex(p));
+  peek(p);
+  printToken(peek(p));
+  printf("index after peek is: %zu \n", getIndex(p));
   advance(p);
-  // peek(p);
+  printf("index after advance is: %zu \n", getIndex(p));
+  advance(p);
+  printf("index after advance is: %zu \n", getIndex(p));
+
+  printToken(peek(p));
   //   printTokens(tokens, 3);
   if (file_content != NULL) {
     printf("File Content:\n%s\n", file_content);

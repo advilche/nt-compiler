@@ -31,7 +31,7 @@ Token newToken(TokenType type, const char *start, size_t length) {
   return t;
 }
 
-void tokenDestroy(Token *pT) {
+void freeToken(Token *pT) {
   if ((pT != NULL) && (*pT != NULL)) {
     free(*pT);
     *pT = NULL;
@@ -54,13 +54,31 @@ TokenArray newTokenArray() {
   return tArray;
 }
 
-/*** Access Functions ***/
+void freeTokenArray(TokenArray *pTA) {
+  if (pTA != NULL && *pTA != NULL) {
+    while (length(*pTA) > 0) {
+      deleteFront(*pTA);
+    }
 
-Token firstToken(TokenArray tokens) {
+    free(*pTA);
+    *pTA = NULL;
+  }
+}
+
+/*** Access Functions ***/
+size_t length(TokenArray tA) { return tA->length; }
+
+Token getFront(TokenArray tokens) {
   if (tokens == NULL)
     return NULL;
 
   return tokens->front;
+}
+
+Token getBack(TokenArray tokens) {
+  if (tokens == NULL)
+    return NULL;
+  return tokens->back;
 }
 
 Token nextToken(Token token) {
@@ -100,7 +118,29 @@ void appendToken(TokenArray tA, Token t) {
   tA->length += 1;
 }
 
-void deleteFront(TokenArray tA);
+void deleteFront(TokenArray tA) {
+  if (tA == NULL) {
+    printf("Token Array Error: calling deleteFront() on NULL Token Array "
+           "reference\n");
+    exit(EXIT_FAILURE);
+  }
+
+  if (tA->length <= 0) {
+    printf("Token Array Error: calling deleteFront() on empty Token Array "
+           "reference\n");
+    exit(EXIT_FAILURE);
+  }
+
+  Token t = tA->front;
+  if (tA->length > 1) {
+    tA->front = tA->front->next;
+    tA->front->prev = NULL;
+  } else {
+    tA->front = tA->back = NULL;
+  }
+
+  freeToken(&t);
+}
 
 /*** Other Functions ***/
 void printToken(Token token) {
@@ -118,6 +158,16 @@ void printTokenArray(FILE *out, TokenArray tA) {
     current = current->next;
   }
   fprintf(out, "\n");
+}
+
+TokenArray copyTokenArray(TokenArray tA) {
+  TokenArray copy_tA = newTokenArray();
+  Token current = tA->front;
+  while (current != NULL) {
+    appendToken(copy_tA, current);
+    current = current->next;
+  }
+  return copy_tA;
 }
 
 bool is_semi_colon(uint32_t val) { return (val == ';'); }
